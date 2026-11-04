@@ -1,0 +1,1 @@
+export default `Rulers prompt v2: Write chapter id rulers, titled Your ruling planets. Explicitly distinguish Sun-sign ruler and Rising-derived chart ruler under the selected convention. Describe their actual signs, occupied houses, selected aspects and ruled houses. Introduce coincident rulers once. Include 2–3 specific reflection questions.`;

@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    ".venv/**",
+    ".output/**",
+    ".vercel/**",
+    ".tanstack/**",
+    "prompt-files/**",
+    "static/**",
+    "ephemeris/**",
+    "src/routeTree.gen.ts",
+    "pnpm-lock.yaml",
+    "output/**"
+  ]
+}

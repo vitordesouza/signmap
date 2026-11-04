@@ -1,0 +1,1814 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Mapa calculation API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/reading": {
+      "post": {
+        "operationId": "generateReading",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "chart": {
+                    "type": "object",
+                    "properties": {
+                      "locationId": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "exclusiveMinimum": true,
+                        "maximum": 9007199254740991
+                      },
+                      "date": {
+                        "type": "string",
+                        "format": "date",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                      },
+                      "time": {
+                        "type": "string",
+                        "pattern": "^\\d{2}:\\d{2}$"
+                      },
+                      "timeChoice": {
+                        "default": "reject",
+                        "type": "string",
+                        "enum": ["reject", "earlier", "later"]
+                      },
+                      "settings": {
+                        "type": "object",
+                        "properties": {
+                          "houseSystem": {
+                            "type": "string",
+                            "enum": ["P", "W", "E"]
+                          },
+                          "nodeMode": {
+                            "type": "string",
+                            "enum": ["true", "mean"]
+                          },
+                          "lilithMode": {
+                            "type": "string",
+                            "enum": ["mean", "osculating"]
+                          },
+                          "fortuneMode": {
+                            "type": "string",
+                            "enum": ["sect", "day"]
+                          },
+                          "rulership": {
+                            "type": "string",
+                            "enum": ["traditional", "modern"]
+                          },
+                          "weighting": {
+                            "type": "string",
+                            "enum": ["equal", "personal"]
+                          },
+                          "cuspOrb": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 5
+                          },
+                          "aspectPoints": {
+                            "minItems": 2,
+                            "maxItems": 19,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "sun",
+                                "rising",
+                                "moon",
+                                "mercury",
+                                "venus",
+                                "mars",
+                                "jupiter",
+                                "saturn",
+                                "uranus",
+                                "neptune",
+                                "pluto",
+                                "midheaven",
+                                "chiron",
+                                "lilith",
+                                "northNode",
+                                "southNode",
+                                "fortune",
+                                "descendant",
+                                "ic"
+                              ]
+                            }
+                          },
+                          "enabledAspects": {
+                            "minItems": 1,
+                            "maxItems": 11,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "conjunction",
+                                "sextile",
+                                "square",
+                                "trine",
+                                "opposition",
+                                "semisextile",
+                                "semisquare",
+                                "sesquiquadrate",
+                                "quincunx",
+                                "quintile",
+                                "biquintile"
+                              ]
+                            }
+                          },
+                          "orbs": {
+                            "type": "object",
+                            "properties": {
+                              "conjunction": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 12
+                              },
+                              "sextile": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 12
+                              },
+                              "square": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 12
+                              },
+                              "trine": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 12
+                              },
+                              "opposition": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 12
+                              },
+                              "semisextile": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 5
+                              },
+                              "semisquare": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 5
+                              },
+                              "sesquiquadrate": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 5
+                              },
+                              "quincunx": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 5
+                              },
+                              "quintile": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 5
+                              },
+                              "biquintile": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 5
+                              }
+                            },
+                            "required": [
+                              "conjunction",
+                              "sextile",
+                              "square",
+                              "trine",
+                              "opposition",
+                              "semisextile",
+                              "semisquare",
+                              "sesquiquadrate",
+                              "quincunx",
+                              "quintile",
+                              "biquintile"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "houseSystem",
+                          "nodeMode",
+                          "lilithMode",
+                          "fortuneMode",
+                          "rulership",
+                          "weighting",
+                          "cuspOrb",
+                          "aspectPoints",
+                          "enabledAspects",
+                          "orbs"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": ["locationId", "date", "time", "timeChoice", "settings"],
+                    "additionalProperties": false
+                  },
+                  "preset": {
+                    "type": "string",
+                    "enum": ["english-internal-v1"]
+                  }
+                },
+                "required": ["chart", "preset"],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Two chapter reading",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "edition": {
+                      "type": "object",
+                      "properties": {
+                        "introduction": {
+                          "type": "string",
+                          "minLength": 40,
+                          "maxLength": 700
+                        },
+                        "chapters": {
+                          "minItems": 2,
+                          "maxItems": 2,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "enum": ["sun", "rulers"]
+                              },
+                              "title": {
+                                "type": "string",
+                                "minLength": 3,
+                                "maxLength": 100
+                              },
+                              "paragraphs": {
+                                "minItems": 2,
+                                "maxItems": 5,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "text": {
+                                      "type": "string",
+                                      "minLength": 40,
+                                      "maxLength": 1400
+                                    },
+                                    "assertions": {
+                                      "minItems": 1,
+                                      "maxItems": 12,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "factId": {
+                                            "type": "string"
+                                          },
+                                          "property": {
+                                            "type": "string"
+                                          },
+                                          "value": {
+                                            "type": "string",
+                                            "maxLength": 200
+                                          }
+                                        },
+                                        "required": ["factId", "property", "value"],
+                                        "additionalProperties": false
+                                      }
+                                    },
+                                    "factIds": {
+                                      "minItems": 1,
+                                      "maxItems": 12,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "referenceIds": {
+                                      "minItems": 1,
+                                      "maxItems": 8,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  },
+                                  "required": ["text", "assertions", "factIds", "referenceIds"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "reflections": {
+                                "minItems": 2,
+                                "maxItems": 3,
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 15,
+                                  "maxLength": 240
+                                }
+                              }
+                            },
+                            "required": ["id", "title", "paragraphs", "reflections"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "conclusion": {
+                          "type": "string",
+                          "minLength": 40,
+                          "maxLength": 700
+                        }
+                      },
+                      "required": ["introduction", "chapters", "conclusion"],
+                      "additionalProperties": false
+                    },
+                    "fingerprint": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    },
+                    "versions": {
+                      "type": "object",
+                      "properties": {
+                        "prompts": {
+                          "type": "string"
+                        },
+                        "voice": {
+                          "type": "string"
+                        },
+                        "references": {
+                          "type": "string"
+                        },
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["prompts", "voice", "references", "schema"],
+                      "additionalProperties": false
+                    },
+                    "stages": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "stage": {
+                            "type": "string",
+                            "enum": ["sun", "rulers", "editor"]
+                          },
+                          "durationMs": {
+                            "type": "number"
+                          },
+                          "inputTokens": {
+                            "nullable": true,
+                            "type": "number"
+                          },
+                          "outputTokens": {
+                            "nullable": true,
+                            "type": "number"
+                          },
+                          "costUsd": {
+                            "nullable": true,
+                            "type": "number"
+                          },
+                          "success": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "stage",
+                          "durationMs",
+                          "inputTokens",
+                          "outputTokens",
+                          "costUsd",
+                          "success"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "durationMs": {
+                      "type": "number"
+                    },
+                    "costUsd": {
+                      "nullable": true,
+                      "type": "number"
+                    },
+                    "drafts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "enum": ["sun", "rulers"]
+                          },
+                          "title": {
+                            "type": "string",
+                            "minLength": 3,
+                            "maxLength": 100
+                          },
+                          "paragraphs": {
+                            "minItems": 2,
+                            "maxItems": 5,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "text": {
+                                  "type": "string",
+                                  "minLength": 40,
+                                  "maxLength": 1400
+                                },
+                                "assertions": {
+                                  "minItems": 1,
+                                  "maxItems": 12,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "factId": {
+                                        "type": "string"
+                                      },
+                                      "property": {
+                                        "type": "string"
+                                      },
+                                      "value": {
+                                        "type": "string",
+                                        "maxLength": 200
+                                      }
+                                    },
+                                    "required": ["factId", "property", "value"],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "factIds": {
+                                  "minItems": 1,
+                                  "maxItems": 12,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "referenceIds": {
+                                  "minItems": 1,
+                                  "maxItems": 8,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "required": ["text", "assertions", "factIds", "referenceIds"],
+                              "additionalProperties": false
+                            }
+                          },
+                          "reflections": {
+                            "minItems": 2,
+                            "maxItems": 3,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 15,
+                              "maxLength": 240
+                            }
+                          }
+                        },
+                        "required": ["id", "title", "paragraphs", "reflections"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "edition",
+                    "fingerprint",
+                    "model",
+                    "versions",
+                    "stages",
+                    "durationMs",
+                    "costUsd"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation or calculation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "choices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "choice": {
+                            "type": "string",
+                            "enum": ["earlier", "later"]
+                          },
+                          "utc": {
+                            "type": "string"
+                          },
+                          "offset": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["choice", "utc", "offset"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["error", "code"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Validation or calculation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "choices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "choice": {
+                            "type": "string",
+                            "enum": ["earlier", "later"]
+                          },
+                          "utc": {
+                            "type": "string"
+                          },
+                          "offset": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["choice", "utc", "offset"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["error", "code"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Validation or calculation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "choices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "choice": {
+                            "type": "string",
+                            "enum": ["earlier", "later"]
+                          },
+                          "utc": {
+                            "type": "string"
+                          },
+                          "offset": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["choice", "utc", "offset"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["error", "code"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Validation or calculation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "choices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "choice": {
+                            "type": "string",
+                            "enum": ["earlier", "later"]
+                          },
+                          "utc": {
+                            "type": "string"
+                          },
+                          "offset": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["choice", "utc", "offset"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["error", "code"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Validation or calculation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "choices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "choice": {
+                            "type": "string",
+                            "enum": ["earlier", "later"]
+                          },
+                          "utc": {
+                            "type": "string"
+                          },
+                          "offset": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["choice", "utc", "offset"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["error", "code"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/locations": {
+      "get": {
+        "operationId": "searchLocations",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 120
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matching places",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "region": {
+                            "type": "string"
+                          },
+                          "country": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["id", "name", "region", "country"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["results"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation or calculation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "choices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "choice": {
+                            "type": "string",
+                            "enum": ["earlier", "later"]
+                          },
+                          "utc": {
+                            "type": "string"
+                          },
+                          "offset": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["choice", "utc", "offset"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["error", "code"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Validation or calculation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "choices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "choice": {
+                            "type": "string",
+                            "enum": ["earlier", "later"]
+                          },
+                          "utc": {
+                            "type": "string"
+                          },
+                          "offset": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["choice", "utc", "offset"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["error", "code"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/chart": {
+      "post": {
+        "operationId": "calculateChart",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "locationId": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "exclusiveMinimum": true,
+                    "maximum": 9007199254740991
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                  },
+                  "time": {
+                    "type": "string",
+                    "pattern": "^\\d{2}:\\d{2}$"
+                  },
+                  "timeChoice": {
+                    "default": "reject",
+                    "type": "string",
+                    "enum": ["reject", "earlier", "later"]
+                  },
+                  "settings": {
+                    "type": "object",
+                    "properties": {
+                      "houseSystem": {
+                        "type": "string",
+                        "enum": ["P", "W", "E"]
+                      },
+                      "nodeMode": {
+                        "type": "string",
+                        "enum": ["true", "mean"]
+                      },
+                      "lilithMode": {
+                        "type": "string",
+                        "enum": ["mean", "osculating"]
+                      },
+                      "fortuneMode": {
+                        "type": "string",
+                        "enum": ["sect", "day"]
+                      },
+                      "rulership": {
+                        "type": "string",
+                        "enum": ["traditional", "modern"]
+                      },
+                      "weighting": {
+                        "type": "string",
+                        "enum": ["equal", "personal"]
+                      },
+                      "cuspOrb": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 5
+                      },
+                      "aspectPoints": {
+                        "minItems": 2,
+                        "maxItems": 19,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "sun",
+                            "rising",
+                            "moon",
+                            "mercury",
+                            "venus",
+                            "mars",
+                            "jupiter",
+                            "saturn",
+                            "uranus",
+                            "neptune",
+                            "pluto",
+                            "midheaven",
+                            "chiron",
+                            "lilith",
+                            "northNode",
+                            "southNode",
+                            "fortune",
+                            "descendant",
+                            "ic"
+                          ]
+                        }
+                      },
+                      "enabledAspects": {
+                        "minItems": 1,
+                        "maxItems": 11,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "conjunction",
+                            "sextile",
+                            "square",
+                            "trine",
+                            "opposition",
+                            "semisextile",
+                            "semisquare",
+                            "sesquiquadrate",
+                            "quincunx",
+                            "quintile",
+                            "biquintile"
+                          ]
+                        }
+                      },
+                      "orbs": {
+                        "type": "object",
+                        "properties": {
+                          "conjunction": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 12
+                          },
+                          "sextile": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 12
+                          },
+                          "square": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 12
+                          },
+                          "trine": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 12
+                          },
+                          "opposition": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 12
+                          },
+                          "semisextile": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 5
+                          },
+                          "semisquare": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 5
+                          },
+                          "sesquiquadrate": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 5
+                          },
+                          "quincunx": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 5
+                          },
+                          "quintile": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 5
+                          },
+                          "biquintile": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 5
+                          }
+                        },
+                        "required": [
+                          "conjunction",
+                          "sextile",
+                          "square",
+                          "trine",
+                          "opposition",
+                          "semisextile",
+                          "semisquare",
+                          "sesquiquadrate",
+                          "quincunx",
+                          "quintile",
+                          "biquintile"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "houseSystem",
+                      "nodeMode",
+                      "lilithMode",
+                      "fortuneMode",
+                      "rulership",
+                      "weighting",
+                      "cuspOrb",
+                      "aspectPoints",
+                      "enabledAspects",
+                      "orbs"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": ["locationId", "date", "time", "timeChoice", "settings"],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calculated natal chart",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "points": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "enum": [
+                              "sun",
+                              "rising",
+                              "moon",
+                              "mercury",
+                              "venus",
+                              "mars",
+                              "jupiter",
+                              "saturn",
+                              "uranus",
+                              "neptune",
+                              "pluto",
+                              "midheaven",
+                              "chiron",
+                              "lilith",
+                              "northNode",
+                              "southNode",
+                              "fortune",
+                              "descendant",
+                              "ic"
+                            ]
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "glyph": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "type": "string",
+                            "enum": ["planet", "angle", "point"]
+                          },
+                          "longitude": {
+                            "type": "number"
+                          },
+                          "latitude": {
+                            "type": "number"
+                          },
+                          "speed": {
+                            "nullable": true,
+                            "type": "number"
+                          },
+                          "house": {
+                            "nullable": true,
+                            "type": "number"
+                          },
+                          "nextCusp": {
+                            "nullable": true,
+                            "type": "number"
+                          },
+                          "cuspDistance": {
+                            "nullable": true,
+                            "type": "number"
+                          },
+                          "decan": {
+                            "type": "number"
+                          },
+                          "conditions": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "glyph",
+                          "kind",
+                          "longitude",
+                          "latitude",
+                          "speed",
+                          "house",
+                          "nextCusp",
+                          "cuspDistance",
+                          "decan",
+                          "conditions"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "cusps": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "aspects": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "a": {
+                            "type": "string",
+                            "enum": [
+                              "sun",
+                              "rising",
+                              "moon",
+                              "mercury",
+                              "venus",
+                              "mars",
+                              "jupiter",
+                              "saturn",
+                              "uranus",
+                              "neptune",
+                              "pluto",
+                              "midheaven",
+                              "chiron",
+                              "lilith",
+                              "northNode",
+                              "southNode",
+                              "fortune",
+                              "descendant",
+                              "ic"
+                            ]
+                          },
+                          "b": {
+                            "type": "string",
+                            "enum": [
+                              "sun",
+                              "rising",
+                              "moon",
+                              "mercury",
+                              "venus",
+                              "mars",
+                              "jupiter",
+                              "saturn",
+                              "uranus",
+                              "neptune",
+                              "pluto",
+                              "midheaven",
+                              "chiron",
+                              "lilith",
+                              "northNode",
+                              "southNode",
+                              "fortune",
+                              "descendant",
+                              "ic"
+                            ]
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "conjunction",
+                              "sextile",
+                              "square",
+                              "trine",
+                              "opposition",
+                              "semisextile",
+                              "semisquare",
+                              "sesquiquadrate",
+                              "quincunx",
+                              "quintile",
+                              "biquintile"
+                            ]
+                          },
+                          "angle": {
+                            "type": "number"
+                          },
+                          "separation": {
+                            "type": "number"
+                          },
+                          "orb": {
+                            "type": "number"
+                          },
+                          "limit": {
+                            "type": "number"
+                          }
+                        },
+                        "required": ["id", "a", "b", "type", "angle", "separation", "orb", "limit"],
+                        "additionalProperties": false
+                      }
+                    },
+                    "summary": {
+                      "type": "object",
+                      "properties": {
+                        "elements": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "type": "string"
+                              },
+                              "score": {
+                                "type": "number"
+                              },
+                              "percent": {
+                                "type": "number"
+                              }
+                            },
+                            "required": ["label", "score", "percent"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "modalities": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "type": "string"
+                              },
+                              "score": {
+                                "type": "number"
+                              },
+                              "percent": {
+                                "type": "number"
+                              }
+                            },
+                            "required": ["label", "score", "percent"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "polarities": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "type": "string"
+                              },
+                              "score": {
+                                "type": "number"
+                              },
+                              "percent": {
+                                "type": "number"
+                              }
+                            },
+                            "required": ["label", "score", "percent"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "signs": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "type": "string"
+                              },
+                              "score": {
+                                "type": "number"
+                              },
+                              "percent": {
+                                "type": "number"
+                              }
+                            },
+                            "required": ["label", "score", "percent"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "houses": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "type": "string"
+                              },
+                              "score": {
+                                "type": "number"
+                              },
+                              "percent": {
+                                "type": "number"
+                              }
+                            },
+                            "required": ["label", "score", "percent"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "weighting": {
+                          "type": "string"
+                        },
+                        "chartRuler": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "elements",
+                        "modalities",
+                        "polarities",
+                        "signs",
+                        "houses",
+                        "weighting",
+                        "chartRuler"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "location": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "region": {
+                          "type": "string"
+                        },
+                        "country": {
+                          "type": "string"
+                        },
+                        "latitude": {
+                          "type": "number"
+                        },
+                        "longitude": {
+                          "type": "number"
+                        },
+                        "timezone": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "region",
+                        "country",
+                        "latitude",
+                        "longitude",
+                        "timezone"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "settings": {
+                      "type": "object",
+                      "properties": {
+                        "houseSystem": {
+                          "type": "string",
+                          "enum": ["P", "W", "E"]
+                        },
+                        "nodeMode": {
+                          "type": "string",
+                          "enum": ["true", "mean"]
+                        },
+                        "lilithMode": {
+                          "type": "string",
+                          "enum": ["mean", "osculating"]
+                        },
+                        "fortuneMode": {
+                          "type": "string",
+                          "enum": ["sect", "day"]
+                        },
+                        "rulership": {
+                          "type": "string",
+                          "enum": ["traditional", "modern"]
+                        },
+                        "weighting": {
+                          "type": "string",
+                          "enum": ["equal", "personal"]
+                        },
+                        "cuspOrb": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 5
+                        },
+                        "aspectPoints": {
+                          "minItems": 2,
+                          "maxItems": 19,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "sun",
+                              "rising",
+                              "moon",
+                              "mercury",
+                              "venus",
+                              "mars",
+                              "jupiter",
+                              "saturn",
+                              "uranus",
+                              "neptune",
+                              "pluto",
+                              "midheaven",
+                              "chiron",
+                              "lilith",
+                              "northNode",
+                              "southNode",
+                              "fortune",
+                              "descendant",
+                              "ic"
+                            ]
+                          }
+                        },
+                        "enabledAspects": {
+                          "minItems": 1,
+                          "maxItems": 11,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "conjunction",
+                              "sextile",
+                              "square",
+                              "trine",
+                              "opposition",
+                              "semisextile",
+                              "semisquare",
+                              "sesquiquadrate",
+                              "quincunx",
+                              "quintile",
+                              "biquintile"
+                            ]
+                          }
+                        },
+                        "orbs": {
+                          "type": "object",
+                          "properties": {
+                            "conjunction": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 12
+                            },
+                            "sextile": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 12
+                            },
+                            "square": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 12
+                            },
+                            "trine": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 12
+                            },
+                            "opposition": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 12
+                            },
+                            "semisextile": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 5
+                            },
+                            "semisquare": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 5
+                            },
+                            "sesquiquadrate": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 5
+                            },
+                            "quincunx": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 5
+                            },
+                            "quintile": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 5
+                            },
+                            "biquintile": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 5
+                            }
+                          },
+                          "required": [
+                            "conjunction",
+                            "sextile",
+                            "square",
+                            "trine",
+                            "opposition",
+                            "semisextile",
+                            "semisquare",
+                            "sesquiquadrate",
+                            "quincunx",
+                            "quintile",
+                            "biquintile"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "houseSystem",
+                        "nodeMode",
+                        "lilithMode",
+                        "fortuneMode",
+                        "rulership",
+                        "weighting",
+                        "cuspOrb",
+                        "aspectPoints",
+                        "enabledAspects",
+                        "orbs"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "utc": {
+                          "type": "string"
+                        },
+                        "offset": {
+                          "type": "string"
+                        },
+                        "julianDayUT": {
+                          "type": "number"
+                        },
+                        "julianDayTT": {
+                          "type": "number"
+                        },
+                        "engine": {
+                          "type": "string"
+                        },
+                        "ephemeris": {
+                          "type": "string"
+                        },
+                        "dataRevision": {
+                          "type": "string"
+                        },
+                        "timezoneData": {
+                          "type": "string"
+                        },
+                        "dayChart": {
+                          "type": "boolean"
+                        },
+                        "sunAltitude": {
+                          "type": "number"
+                        },
+                        "houseMethod": {
+                          "type": "string"
+                        },
+                        "settingsVersion": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "utc",
+                        "offset",
+                        "julianDayUT",
+                        "julianDayTT",
+                        "engine",
+                        "ephemeris",
+                        "dataRevision",
+                        "timezoneData",
+                        "dayChart",
+                        "sunAltitude",
+                        "houseMethod",
+                        "settingsVersion"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "points",
+                    "cusps",
+                    "aspects",
+                    "summary",
+                    "location",
+                    "settings",
+                    "metadata",
+                    "warnings"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation or calculation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "choices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "choice": {
+                            "type": "string",
+                            "enum": ["earlier", "later"]
+                          },
+                          "utc": {
+                            "type": "string"
+                          },
+                          "offset": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["choice", "utc", "offset"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["error", "code"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or calculation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "choices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "choice": {
+                            "type": "string",
+                            "enum": ["earlier", "later"]
+                          },
+                          "utc": {
+                            "type": "string"
+                          },
+                          "offset": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["choice", "utc", "offset"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["error", "code"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Validation or calculation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "choices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "choice": {
+                            "type": "string",
+                            "enum": ["earlier", "later"]
+                          },
+                          "utc": {
+                            "type": "string"
+                          },
+                          "offset": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["choice", "utc", "offset"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["error", "code"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Validation or calculation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "choices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "choice": {
+                            "type": "string",
+                            "enum": ["earlier", "later"]
+                          },
+                          "utc": {
+                            "type": "string"
+                          },
+                          "offset": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["choice", "utc", "offset"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["error", "code"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

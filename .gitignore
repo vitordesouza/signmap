@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+node_modules/
+.DS_Store
+.output/
+.vercel/
+.tanstack/
+dist/
+output/
+prompt-files/
+
+.env*

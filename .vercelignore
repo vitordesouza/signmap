@@ -1,0 +1,12 @@
+.git
+.venv
+node_modules
+.output
+.tanstack
+output
+prompt-files
+tests
+docs
+.env*
+.DS_Store
+.npmrc
